@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: app
-          image: your-dockerhub/devops-reliability-app:latest
+          image: krishna7m1/devops-reliability-app:v1
           ports:
             - containerPort: 5000
           env:
