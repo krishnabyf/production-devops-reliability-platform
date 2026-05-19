@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-test-scan-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          cd app
+          pip install -r requirements.txt
+
+      - name: Run Health Test
+        run: |
+          cd app
+          python -m py_compile app.py
+
+      - name: Build Docker Image
+        run: |
+          docker build -t devops-reliability-app:${{ github.sha }} ./app
+
+      - name: Security Scan with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: devops-reliability-app:${{ github.sha }}
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+      - name: Deployment Placeholder
+        run: |
+          echo "Deploy image to Kubernetes using kubectl/Helm/ArgoCD"

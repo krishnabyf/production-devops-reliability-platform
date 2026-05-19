@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-reliability-service
+spec:
+  selector:
+    app: devops-reliability-app
+  ports:
+    - port: 80
+      targetPort: 5000
+  type: LoadBalancer

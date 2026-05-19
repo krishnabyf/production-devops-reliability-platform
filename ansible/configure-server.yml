@@ -1,0 +1,27 @@
+- name: Configure Linux Server
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update packages
+      apt:
+        update_cache: yes
+
+    - name: Install Docker
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install basic monitoring tools
+      apt:
+        name:
+          - htop
+          - curl
+          - unzip
+        state: present

@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-reliability-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: devops-reliability-app
+  template:
+    metadata:
+      labels:
+        app: devops-reliability-app
+    spec:
+      containers:
+        - name: app
+          image: your-dockerhub/devops-reliability-app:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ENV
+              value: "production"
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: sentry-secret
+                  key: dsn
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 20
